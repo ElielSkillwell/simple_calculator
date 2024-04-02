@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import pytest
-
 from simple_calculator.main import SimpleCalculator
+import pytest
 
 
 def test_add_two_numbers():
@@ -18,7 +17,6 @@ def test_add_three_numbers():
     calculator = SimpleCalculator()
 
     result = calculator.add(4, 5, 6)
-
     assert result == 15
 
 
@@ -40,25 +38,22 @@ def test_subtract_two_numbers():
     assert result == 7
 
 
-def test_mul_two_numbers():
+def test_mult_two_numbers():
     calculator = SimpleCalculator()
-
-    result = calculator.mul(6, 4)
-
+    result =  calculator.mult(6, 4)
     assert result == 24
 
 
 def test_mul_many_numbers():
-    numbers = range(1, 10)
-
+    numbers = range(1,10)
+    
     calculator = SimpleCalculator()
-
-    result = calculator.mul(*numbers)
+    result = calculator.mult(*numbers)
 
     assert result == 362880
 
 
-def test_div_two_numbers_float():
+def test_div_two_numbers():
     calculator = SimpleCalculator()
 
     result = calculator.div(13, 2)
@@ -66,41 +61,48 @@ def test_div_two_numbers_float():
     assert result == 6.5
 
 
-def test_div_by_zero_returns_inf():
+def test_div_by_zero():
     calculator = SimpleCalculator()
+    
+    result = calculator.div(13, 0)
 
-    result = calculator.div(5, 0)
-
-    assert result == float("inf")
+    assert result == float('inf')
 
 
 def test_mul_by_zero_raises_exception():
     calculator = SimpleCalculator()
 
     with pytest.raises(ValueError):
-        calculator.mul(3, 0)
+        calculator.mult(3, 0)
 
 
-def test_avg_correct_average():
+def test_avg():
     calculator = SimpleCalculator()
 
     result = calculator.avg([2, 5, 12, 98])
+    
+    assert result == 29.5
 
+
+def test_avg():
+    calculator = SimpleCalculator()
+
+    result = calculator.avg([2, 5, 12, 98])
+    
     assert result == 29.25
 
 
-def test_avg_removes_upper_outliers():
+def test_avg_ul():
     calculator = SimpleCalculator()
 
-    result = calculator.avg([2, 5, 12, 98], ut=90)
+    result = calculator.avg([2, 5, 12, 98], ul=90)
+    
+    assert result == pytest.approx(6.33333)
 
-    assert result == pytest.approx(6.333333)
-
-
-def test_avg_removes_lower_outliers():
+def test_avg_ll():
     calculator = SimpleCalculator()
 
-    result = calculator.avg([2, 5, 12, 98], lt=10)
+    result = calculator.avg([2, 5, 12, 98], ll=10)
 
     assert result == pytest.approx(55)
 
@@ -108,7 +110,7 @@ def test_avg_removes_lower_outliers():
 def test_avg_upper_threshold_is_included():
     calculator = SimpleCalculator()
 
-    result = calculator.avg([2, 5, 12, 98], ut=98)
+    result = calculator.avg([2, 5, 12, 98], ul=98)
 
     assert result == 29.25
 
@@ -116,12 +118,12 @@ def test_avg_upper_threshold_is_included():
 def test_avg_lower_threshold_is_included():
     calculator = SimpleCalculator()
 
-    result = calculator.avg([2, 5, 12, 98], lt=2)
+    result = calculator.avg([2, 5, 12, 98], ll=2)
 
     assert result == 29.25
 
 
-def test_avg_empty_list():
+def test_avg_empty_lst():
     calculator = SimpleCalculator()
 
     result = calculator.avg([])
@@ -132,15 +134,7 @@ def test_avg_empty_list():
 def test_avg_manages_empty_list_after_outlier_removal():
     calculator = SimpleCalculator()
 
-    result = calculator.avg([12, 98], lt=15, ut=90)
-
-    assert result == 0
-
-
-def test_avg_manages_empty_list_before_outlier_removal():
-    calculator = SimpleCalculator()
-
-    result = calculator.avg([], lt=15, ut=90)
+    result = calculator.avg([12, 98], ll=15, ul=90)
 
     assert result == 0
 
@@ -148,15 +142,14 @@ def test_avg_manages_empty_list_before_outlier_removal():
 def test_avg_manages_zero_value_lower_outlier():
     calculator = SimpleCalculator()
 
-    result = calculator.avg([-1, 0, 1], lt=0)
+    result = calculator.avg([-1, 0, 1], ll=0)
 
     assert result == 0.5
 
-
-def test_avg_manages_zero_value_upper_outlier():
+def test_avg_manages_zero_value_higher_outlier():
     calculator = SimpleCalculator()
 
-    result = calculator.avg([-1, 0, 1], ut=0)
+    result = calculator.avg([-1, 0, 1], ul=0)
 
     assert result == -0.5
 
